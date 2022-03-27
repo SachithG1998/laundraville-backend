@@ -1,7 +1,6 @@
 let mongoose = require("mongoose");
 
 let customerSchema = mongoose.Schema({
-  ID: Number,
   name: {
     firstName: String,
     lastName: String,
@@ -14,6 +13,7 @@ let customerSchema = mongoose.Schema({
     district: String,
   },
   phone: String,
+  email: String,
   login: {
     username: String,
     password: String,
