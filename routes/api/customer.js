@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 /* Importing customers controller */
-const customersController = require("../../controllers/customers");
+const customersController = require("../../controllers/customer");
 
 /* Default customers route */
 router.get("/", function (req, res) {

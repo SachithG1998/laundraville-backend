@@ -1,8 +1,8 @@
 var express = require("express");
 var router = express.Router();
 
-let routerCustomers = require("./customers");
+let routerCustomers = require("./customer");
 
-router.use("/customers", routerCustomers);
+router.use("/customer", routerCustomers);
 
 module.exports = router;
