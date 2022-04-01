@@ -53,22 +53,30 @@ const registerCustomer = (req, res) => {
 
 const loginCustomer = (req, res) => {
   CustomerModel.findOne(
-    { username: req.body.username },
+    { "login.username": req.body.username },
     "id login",
     (err, customer) => {
-      if (err) {
-        res.send(err);
+      if (err || !customer) {
+        res.json({
+          statusMessage: "CUSTOMER_NOT_FOUND",
+          message: "Customer does not exist.",
+        });
       } else {
         bcrypt.compare(
           req.body.password,
           customer.login.password,
-          (err, resBcrypt) => {
-            if (resBcrypt === true) {
-              res
-                .status(200)
-                .json({ id: customer.id, message: "Logged in successfully" });
+          (err, isValidCredentials) => {
+            if (isValidCredentials) {
+              res.status(200).json({
+                id: customer.id,
+                statusMessage: "CUSTOMER_AUTHENTICATED",
+                message: "Logged in successfully",
+              });
             } else {
-              res.send("Incorrect password");
+              res.json({
+                statusMessage: "CUSTOMER_NOT_AUTHENTICATED",
+                message: "Incorrect password",
+              });
             }
           }
         );
