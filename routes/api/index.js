@@ -1,8 +1,13 @@
 var express = require("express");
 var router = express.Router();
 
-let routerCustomers = require("./customer");
+let routerCustomer = require("./customer");
+let routerDashboard = require("./dashboard");
 
-router.use("/customer", routerCustomers);
+// Customer router
+router.use("/customer", routerCustomer);
+
+// Dashboard router
+router.use("/dasboard", routerCustomer);
 
 module.exports = router;

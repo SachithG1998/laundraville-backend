@@ -51,23 +51,57 @@ const registerCustomer = (req, res) => {
             password: hashedPassword,
           },
         });
-
-        newCustomer.save((err) => {
-          if (err) {
-            res.status(502).json({
-              error: err.toString(),
-            });
-          } else {
-            res.status(200).json({
-              id: newCustomer.id,
-              statusMessage: "CUSTOMER_REGISTERED_SUCCESSFULLY",
-              message: "Customer Registered Successfully",
-            });
-          }
-        });
       }
+
+      newCustomer.save((err) => {
+        if (err) {
+          res.status(502).json({
+            error: err.toString(),
+          });
+        } else {
+          res.status(200).json({
+            id: newCustomer.id,
+            statusMessage: "CUSTOMER_REGISTERED_SUCCESSFULLY",
+            message: "Customer Registered Successfully",
+          });
+        }
+      });
     });
   }
 };
 
-module.exports = { registerCustomer };
+const loginCustomer = (req, res) => {
+  CustomerModel.findOne(
+    { "login.username": req.body.username },
+    "id login",
+    (err, customer) => {
+      if (err || !customer) {
+        res.json({
+          statusMessage: "CUSTOMER_NOT_FOUND",
+          message: "Customer does not exist.",
+        });
+      } else {
+        bcrypt.compare(
+          req.body.password,
+          customer.login.password,
+          (err, isValidCredentials) => {
+            if (isValidCredentials) {
+              res.status(200).json({
+                id: customer.id,
+                statusMessage: "CUSTOMER_AUTHENTICATED",
+                message: "Logged in successfully",
+              });
+            } else {
+              res.json({
+                statusMessage: "CUSTOMER_NOT_AUTHENTICATED",
+                message: "Incorrect password",
+              });
+            }
+          }
+        );
+      }
+    }
+  );
+};
+
+module.exports = { registerCustomer, loginCustomer };

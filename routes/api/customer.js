@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 /* Importing customers controller */
-const customersController = require("../../controllers/customer");
+const customerController = require("../../controllers/customer");
 
 /* Default customers route */
 router.get("/", function (req, res) {
@@ -11,7 +11,12 @@ router.get("/", function (req, res) {
 
 /* Customer registration endpoint */
 router.post("/register", (req, res) => {
-  customersController.registerCustomer(req, res);
+  customerController.registerCustomer(req, res);
+});
+
+/* Customer login endpoint */
+router.post("/login", (req, res) => {
+  customerController.loginCustomer(req, res);
 });
 
 module.exports = router;
