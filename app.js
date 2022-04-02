@@ -15,7 +15,11 @@ var indexRouter = require("./routes/index");
 var app = express();
 
 // setting cors policy proxy
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+  })
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
