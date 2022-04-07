@@ -1,10 +1,9 @@
 let mongoose = require("mongoose");
 
 let orderSchema = mongoose.Schema({
-  orderID: Number,
   customerID: Number,
-  serviceID: Number,
-  datetime: Date,
+  status: String,
+  datetimeOfOrder: Date,
 });
 
 let orderModel = mongoose.model("Order", orderSchema);

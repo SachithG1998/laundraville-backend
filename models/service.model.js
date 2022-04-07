@@ -1,11 +1,12 @@
 let mongoose = require("mongoose");
 
 let serviceSchema = mongoose.Schema({
-  serviceID: Number,
   serviceName: String,
-  price: Number,
+  unitPrice: Number,
+  unit: String,
+  image: String,
 });
 
-let ServiceModel = mongoose.model("Service", customerSchema);
+let ServiceModel = mongoose.model("Service", serviceSchema);
 
 module.exports = ServiceModel;
