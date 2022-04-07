@@ -5,7 +5,7 @@ var router = express.Router();
 const customerController = require("../../controllers/customer");
 
 /* Default customers route */
-router.get("/", function (req, res) {
+router.get("/", (req, res) => {
   res.send("Customer request endpoint responds successfully");
 });
 
