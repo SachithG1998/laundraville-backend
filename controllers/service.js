@@ -46,38 +46,42 @@ const checkBasketForCustomer = (req, res) => {
 };
 
 const createBasket = (req, res) => {
-  BasketModel.find(
-    {
-      customerID: req.body.customerID,
-    },
-    (err, basket) => {
-      if (err) {
-        res.json({
-          statusMessage: "ERROR",
-          errorMessage: err.toString(),
-        });
-      } else {
-        const newBasket = new BasketModel({
-          customerID: req.body.customerID,
-          basketDatetime: req.body.basketDatetime,
-        });
+  if (req.params.customerID) {
+    BasketModel.find(
+      {
+        customerID: req.body.customerID,
+      },
+      (err, basket) => {
+        if (err) {
+          res.json({
+            statusMessage: "ERROR",
+            errorMessage: err.toString(),
+          });
+        } else {
+          const newBasket = new BasketModel({
+            customerID: req.body.customerID,
+            basketDatetime: req.body.basketDatetime,
+          });
 
-        newBasket.save((err) => {
-          if (err) {
-            res.status(502).json({
-              error: err.toString(),
-            });
-          } else {
-            res.status(200).json({
-              id: newBasket.id,
-              statusMessage: "BASKET_CREATED_SUCCESSFULLY",
-              message: "Basket created successfully",
-            });
-          }
-        });
+          newBasket.save((err) => {
+            if (err) {
+              res.status(502).json({
+                error: err.toString(),
+              });
+            } else {
+              res.status(200).json({
+                id: newBasket.id,
+                statusMessage: "BASKET_CREATED_SUCCESSFULLY",
+                message: "Basket created successfully",
+              });
+            }
+          });
+        }
       }
-    }
-  );
+    );
+  } else {
+    res.send("No customer ID received");
+  }
 };
 
 const saveBasketItem = (req, res) => {
