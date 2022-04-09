@@ -19,4 +19,8 @@ router.post("/login", (req, res) => {
   customerController.loginCustomer(req, res);
 });
 
+router.post("/updateInfo", (req, res) => {
+  customerController.updateInfo(req, res);
+});
+
 module.exports = router;

@@ -24,7 +24,6 @@ const placeOrder = (req, res) => {
       } else {
         BasketModel.findOne(
           { customerID: req.params.customerID },
-          "_id",
           (err, basket) => {
             if (err) {
               res.status(502).json({
@@ -33,9 +32,8 @@ const placeOrder = (req, res) => {
               });
             } else {
               if (basket) {
-                console.log(basket);
                 BasketItemsModel.find(
-                  { basketID: basket._id },
+                  { basketID: basket._id.toString() },
                   (err, basketItems) => {
                     if (err) {
                       res.status(502).json({
@@ -43,7 +41,6 @@ const placeOrder = (req, res) => {
                         message: err.toString(),
                       });
                     } else {
-                      console.log(basket);
                       if (basketItems) {
                         basketItems.forEach((basketItem, index) => {
                           const newOrderItem = new OrderItemsModel({

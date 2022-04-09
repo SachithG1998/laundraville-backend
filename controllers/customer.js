@@ -102,4 +102,6 @@ const loginCustomer = (req, res) => {
   );
 };
 
-module.exports = { registerCustomer, loginCustomer };
+const updateInfo = (req, res) => {};
+
+module.exports = { registerCustomer, loginCustomer, updateInfo };

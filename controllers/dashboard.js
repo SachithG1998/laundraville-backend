@@ -8,12 +8,12 @@ const getCustomerById = (req, res) => {
     req.params.id,
     "name address dob phone email",
     (err, customer) => {
-      if (err)
+      if (err) {
         res.json({
           statusMessage: "CUSTOMER_NOT_FOUND",
           message: "Error retrieving customer info. Please log in again.",
         });
-      else {
+      } else {
         res.json({
           statusMessage: "CUSTOMER_FOUND",
           customer: customer,
@@ -27,7 +27,7 @@ const getOrderSummary = (req, res) => {
   if (req.params.customerID) {
     OrderModel.find({ customerID: req.params.customerID }, (err, orders) => {
       if (err) {
-        res.json({
+        return res.json({
           statusMessage: "ERROR",
           message: err.toString(),
         });
@@ -38,54 +38,63 @@ const getOrderSummary = (req, res) => {
           let ordersWithOrderItems = [];
 
           orders.forEach((order, ordersIndex) => {
-            OrderItemsModel.find({ orderID: order._id }, (err, orderItems) => {
-              if (err) {
-                res.json({
-                  statusMessage: "ERROR",
-                  message: err.toString(),
-                });
-              } else {
-                if (orderItems) {
-                  let orderTotal = 0;
-
-                  ordersWithOrderItems.push({
-                    ...order._doc,
-                  });
-
-                  orderItems.forEach((orderItem, orderItemsIndex) => {
-                    orderTotal += orderItem.unitPrice * orderItem.quantity;
-
-                    try {
-                      if (orderItemsIndex === orderItems.length - 1) {
-                        ordersWithOrderItems[ordersIndex].orderTotal =
-                          orderTotal;
-                        ordersWithOrderItems[ordersIndex].orderItems =
-                          orderItems;
-
-                        totalDue += orderTotal;
-                      }
-                    } catch (e) {
-                      console.log(e.toString());
-                    }
-
-                    if (ordersIndex === orders.length - 1) {
-                      res.json({
-                        totalDue: totalDue,
-                        orders: ordersWithOrderItems,
-                      });
-                    }
+            OrderItemsModel.find(
+              { orderID: order._id.toString() },
+              (err, orderItems) => {
+                console.log(orderItems);
+                if (err) {
+                  console.log("error");
+                  return res.json({
+                    statusMessage: "ERROR",
+                    message: err.toString(),
                   });
                 } else {
-                  res.json({
-                    statusMessage: "NO_ORDER_ITEMS",
-                    message: "Error fetching order items",
-                  });
+                  if (orderItems) {
+                    let orderTotal = 0;
+
+                    ordersWithOrderItems.push({
+                      ...order._doc,
+                    });
+
+                    orderItems.forEach((orderItem, orderItemsIndex) => {
+                      orderTotal += orderItem.unitPrice * orderItem.quantity;
+
+                      try {
+                        if (orderItemsIndex === orderItems.length - 1) {
+                          ordersWithOrderItems[ordersIndex].orderTotal =
+                            orderTotal;
+                          ordersWithOrderItems[ordersIndex].orderItems =
+                            orderItems;
+
+                          totalDue += orderTotal;
+
+                          try {
+                            if (ordersIndex === orders.length - 1) {
+                              res.json({
+                                totalDue: totalDue,
+                                orders: ordersWithOrderItems,
+                              });
+                            }
+                          } catch (e) {
+                            console.log(e.toString());
+                          }
+                        }
+                      } catch (e) {
+                        console.log(e.toString());
+                      }
+                    });
+                  } else {
+                    return res.json({
+                      statusMessage: "NO_ORDER_ITEMS",
+                      message: "Error fetching order items",
+                    });
+                  }
                 }
               }
-            });
+            );
           });
         } else {
-          res.json({
+          return res.json({
             statusMessage: "NO_ORDERS",
             message: "You have not placed any orders yet",
           });
