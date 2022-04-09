@@ -1,7 +1,9 @@
+const BasketModel = require("../models/basket.model");
 const BasketItemsModel = require("../models/basketItems.model");
+
 const ServiceModel = require("../models/service.model");
 
-const getBasketItems = async (req, res) => {
+const getBasketItems = (req, res) => {
   let basketItemsJoined = new Array();
 
   BasketItemsModel.find(
@@ -54,4 +56,56 @@ const getBasketItems = async (req, res) => {
   );
 };
 
-module.exports = { getBasketItems };
+const deleteBasketItemByID = (req, res) => {
+  BasketItemsModel.deleteOne(
+    {
+      basketID: req.params.basketID,
+      serviceID: req.params.serviceID,
+    },
+    (err) => {
+      if (err) {
+        res.json({
+          status: "ERROR",
+          statusMessage: err.toString(),
+        });
+      } else {
+        res.json({
+          status: "SUCCESSFULLY_DELETED_BASKET_ITEM",
+          statusMessage: "Service deleted from basket.",
+        });
+      }
+    }
+  );
+};
+
+const deleteBasketByID = (req, res) => {
+  BasketModel.findByIdAndDelete(req.params.basketID, (err) => {
+    if (err) {
+      res.json({
+        statusMessage: "ERROR",
+        message: err.toString(),
+      });
+    } else {
+      BasketItemsModel.deleteMany(
+        {
+          basketID: req.params.basketID,
+        },
+        (err) => {
+          if (err) {
+            res.json({
+              statusMessage: "ERROR",
+              message: err.toString(),
+            });
+          } else {
+            res.json({
+              statusMessage: "SUCCESSFULLY_DELETED_BASKET",
+              message: "Deleted basket",
+            });
+          }
+        }
+      );
+    }
+  });
+};
+
+module.exports = { getBasketItems, deleteBasketItemByID, deleteBasketByID };

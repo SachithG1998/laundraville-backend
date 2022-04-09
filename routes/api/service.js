@@ -19,8 +19,8 @@ router.post("/basket/newBasket", (req, res) => {
   serviceController.createBasket(req, res);
 });
 
-router.post("/basket/saveBasket/:basketID", (req, res) => {
-  serviceController.saveBasketItem(req, res);
+router.post("/basket/addToBasket", (req, res) => {
+  serviceController.addToBasket(req, res);
 });
 
 module.exports = router;

@@ -1,8 +1,9 @@
 let mongoose = require("mongoose");
 
 let orderSchema = mongoose.Schema({
-  customerID: Number,
+  customerID: String,
   status: String,
+  statusMessage: String,
   datetimeOfOrder: Date,
 });
 

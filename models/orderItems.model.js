@@ -2,7 +2,7 @@ let mongoose = require("mongoose");
 
 let orderItemsSchema = mongoose.Schema({
   orderID: String,
-  serviceID: Number,
+  serviceID: String,
   unitPrice: Number,
   quantity: Number,
 });

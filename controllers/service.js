@@ -46,7 +46,7 @@ const checkBasketForCustomer = (req, res) => {
 };
 
 const createBasket = (req, res) => {
-  if (req.params.customerID) {
+  if (req.body.customerID) {
     BasketModel.find(
       {
         customerID: req.body.customerID,
@@ -70,7 +70,7 @@ const createBasket = (req, res) => {
               });
             } else {
               res.status(200).json({
-                id: newBasket.id,
+                basketID: newBasket.id,
                 statusMessage: "BASKET_CREATED_SUCCESSFULLY",
                 message: "Basket created successfully",
               });
@@ -84,48 +84,68 @@ const createBasket = (req, res) => {
   }
 };
 
-const saveBasketItem = (req, res) => {
-  BasketItemsModel.deleteMany({ basketID: req.params.basketID }, (err) => {
-    if (err) console.log(err);
-    else if (req.body.basketItems) {
-      let newBasketItem;
-      let errors = false;
-
-      req.body.basketItems.forEach((basketItem) => {
-        newBasketItem = new BasketItemsModel({
-          basketID: basketItem.basketID,
-          serviceID: basketItem.serviceID,
-          unitPrice: basketItem.unitPrice,
-          quantity: basketItem.quantity,
+const addToBasket = (req, res) => {
+  BasketItemsModel.findOne(
+    {
+      basketID: req.body.basketID,
+      serviceID: req.body.serviceID,
+    },
+    (err, basketItem) => {
+      if (err) {
+        res.json({
+          statusMessage: "ERROR",
+          message: err.toString(),
         });
+      } else {
+        if (basketItem) {
+          BasketItemsModel.findByIdAndUpdate(
+            basketItem._id,
+            {
+              quantity: basketItem.quantity + req.body.quantity,
+            },
+            (err) => {
+              if (err) {
+                res.json({
+                  statusMessage: "ERROR",
+                  message: err.toString(),
+                });
+              } else {
+                res.json({
+                  statusMessage: "BASKET_ITEM_UPDATED_SUCCESSFULLY",
+                  message: "Updated the basket item.",
+                });
+              }
+            }
+          );
+        } else {
+          newBasketItem = new BasketItemsModel({
+            basketID: req.body.basketID,
+            serviceID: req.body.serviceID,
+            unitPrice: req.body.unitPrice,
+            quantity: req.body.quantity,
+          });
 
-        newBasketItem.save((err) => {
-          if (err) {
-            return res.status(502).json({
-              error: err.toString(),
-            });
-          }
-        });
-      });
-
-      if (!errors) {
-        res.status(200).json({
-          statusMessage: "BASKET_ITEM_ADDED_SUCCESSFULLY",
-          message: "Service added to basket",
-        });
+          newBasketItem.save((err) => {
+            if (err) {
+              return res.status(502).json({
+                error: err.toString(),
+              });
+            } else {
+              res.status(200).json({
+                statusMessage: "BASKET_ITEM_ADDED_SUCCESSFULLY",
+                message: "Service added to basket",
+              });
+            }
+          });
+        }
       }
-    } else {
-      res.json({
-        statusMessage: "NO_BASKET_ITEM",
-        message: "Please select a service to add to your basket",
-      });
     }
-  });
+  );
 };
 
 module.exports = {
   getServices,
   createBasket,
   checkBasketForCustomer,
-  saveBasketItem,
+  addToBasket,
 };
