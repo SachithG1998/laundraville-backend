@@ -59,7 +59,8 @@ const getOrderSummary = (req, res) => {
                       if (orderItemsIndex === orderItems.length - 1) {
                         ordersWithOrderItems[ordersIndex].orderTotal =
                           orderTotal;
-                        ordersWithOrderItems[ordersIndex].orders = orderItems;
+                        ordersWithOrderItems[ordersIndex].orderItems =
+                          orderItems;
 
                         totalDue += orderTotal;
                       }
