@@ -12,4 +12,8 @@ router.get("/customer/:id", (req, res) => {
   dashboardController.getCustomerById(req, res);
 });
 
+router.get("/customer/:customerID/orderSummary", (req, res) => {
+  dashboardController.getOrderSummary(req, res);
+});
+
 module.exports = router;
