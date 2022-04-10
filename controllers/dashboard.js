@@ -41,7 +41,6 @@ const getOrderSummary = (req, res) => {
             OrderItemsModel.find(
               { orderID: order._id.toString() },
               (err, orderItems) => {
-                console.log(orderItems);
                 if (err) {
                   console.log("error");
                   return res.json({
