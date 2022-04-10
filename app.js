@@ -7,8 +7,16 @@ var cors = require("cors");
 
 var mongoose = require("mongoose");
 
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 /* Connceting to laundravilledb */
-mongoose.connect("mongodb://localhost:27017/laundravilledb");
+try {
+  mongoose.connect(process.env.DB_CONNECT_URL);
+} catch (e) {
+  console.log(e.toString());
+}
 
 var indexRouter = require("./routes/index");
 
